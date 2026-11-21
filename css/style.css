@@ -1,0 +1,165 @@
+/* ==========================================================================
+   naes — site
+   Cada seção é um "palco" de 1920×1080 (o tamanho do mockup) que é escalado
+   para preencher a tela. Tudo que fica sobre a arte (embeds, links, fotos)
+   é posicionado em px dentro desse palco, então acompanha a arte sempre.
+   ========================================================================== */
+
+:root { --s: 1; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  background: #000;
+}
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: #000;
+  color: #fff;
+}
+
+/* ---------- Seções ---------- */
+.section {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.section.s4 { z-index: 2; }   /* a foto da lâmpada invade o topo da seção 5 */
+
+.clip { position: absolute; inset: 0; overflow: hidden; }
+
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  transform: translate(-50%, -50%) scale(var(--s));
+  transform-origin: center center;
+}
+/* Camada das fotos: recorta só nas laterais (evita rolagem horizontal) e deixa a
+   foto da lâmpada invadir o topo da seção seguinte, como no mockup. */
+.fxwrap { position: absolute; inset: 0; overflow-x: clip; overflow-y: visible; pointer-events: none; }
+.is-contain .fxwrap { overflow: hidden; }   /* tela em pé: sem vazar para a faixa vazia */
+.stage.fx { pointer-events: none; }
+
+.plate {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ---------- Seção 2: embeds do SoundCloud ----------
+   Ficam no espaço livre ao lado de cada ícone, sem cobrir o lettering. */
+.embed { position: absolute; width: 400px; }
+.embed iframe { display: block; border: 0; }
+.embed-1 { left: 680px;  top: 748px; }   /* ao lado do ícone 1, abaixo da fita */
+.embed-2 { left: 810px;  top: 8px;   }   /* ao lado do ícone 2, acima da fita  */
+
+/* ---------- Seção 4: fotos com hover ---------- */
+.photo {
+  position: absolute;
+  display: block;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform .35s cubic-bezier(.22, .7, .25, 1);
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.photo:hover,
+.photo:focus-visible { transform: scale(1.05); z-index: 10; }
+.p-piscina { z-index: 1; }
+.p-crianca { z-index: 2; }
+.p-lampada { z-index: 3; }
+.p-rosto   { z-index: 4; }
+
+/* ---------- Áreas clicáveis invisíveis sobre a arte ---------- */
+.hit {
+  position: absolute;
+  display: block;
+  cursor: pointer;
+  color: inherit;          /* nunca altera a cor do texto da arte */
+  text-decoration: none;
+  border-radius: 8px;
+}
+.hit:focus-visible { outline: 2px solid rgba(255,255,255,.8); outline-offset: 4px; }
+
+/* "MIXER: NUMARK PARTY MIX II" */
+.hit-mixer { left: 686px; top: 496px; width: 822px; height: 54px; }
+/* ícone + @ de cada rede */
+.hit-insta { left: 1148px; top: 566px; width: 306px; height: 110px; }
+.hit-whats { left: 1148px; top: 720px; width: 326px; height: 110px; }
+.hit-mail  { left: 1148px; top: 854px; width: 546px; height: 112px; }
+
+/* ---------- Navegação por pontos ---------- */
+.dots {
+  position: fixed;
+  right: 26px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dots a {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 26px;           /* área de toque confortável */
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+.dots a::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 11px; height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.85);
+  background: transparent;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.35);
+  transition: transform .3s cubic-bezier(.22,.7,.25,1), background-color .3s, box-shadow .3s, border-color .3s;
+}
+.dots a:hover::before { transform: scale(1.25); background: rgba(255,255,255,.45); }
+.dots a[aria-current="true"]::before {
+  transform: scale(1.3);
+  background: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.35), 0 0 12px rgba(255,255,255,.55);
+}
+.dots a:focus-visible { outline: 2px solid #fff; outline-offset: 0; }
+
+/* ---------- Utilitário: texto só para leitores de tela / buscadores ---------- */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 700px) { .dots { right: 6px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .photo, .dots a::before { transition: none; }
+}
