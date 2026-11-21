@@ -163,3 +163,20 @@ body {
   html { scroll-behavior: auto; }
   .photo, .dots a::before { transition: none; }
 }
+
+.soundcloud-circulo {
+  width: 200px;          /* Largura do círculo */
+  height: 200px;         /* Altura igual à largura para ser um círculo perfeito */
+  border-radius: 50%;    /* Transforma o quadrado em círculo */
+  overflow: hidden;      /* Corta as pontas quadradas do iframe que sobram */
+  position: relative;    /* Permite ajustar a posição do player interno */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra opcional para dar destaque */
+}
+
+.soundcloud-circulo iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  /* O ajuste abaixo dá um leve zoom para esconder o título/logo nas bordas e focar no botão Play */
+  transform: scale(1.3); 
+}
